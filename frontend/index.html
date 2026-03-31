@@ -1,0 +1,561 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Study Planner — Streak & Leaderboard</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>"
+    />
+  </head>
+  <body>
+    <!-- ════════════════════════════════════════════════════════════
+     PAGE 1: LOGIN
+════════════════════════════════════════════════════════════ -->
+    <div id="login-page" class="page auth-page active">
+      <div class="auth-card">
+        <div class="auth-logo">
+          <div class="logo-icon">📚</div>
+          <span>StudyPlanner</span>
+        </div>
+
+        <h1>Welcome back</h1>
+        <p class="subtitle">Sign in to continue your study journey</p>
+
+        <form onsubmit="handleLogin(event)">
+          <div class="form-group">
+            <label>Email Address</label>
+            <input
+              type="email"
+              name="email"
+              placeholder="you@college.edu"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label>Password</label>
+            <input
+              type="password"
+              name="password"
+              placeholder="Enter your password"
+              required
+            />
+          </div>
+          <button type="submit" class="btn btn-primary" data-label="Sign In">
+            Sign In →
+          </button>
+        </form>
+
+        <p class="auth-switch">
+          Don't have an account?
+          <a onclick="showPage('register-page')">Create one</a>
+        </p>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════════════════════════════
+     PAGE 2: REGISTER
+════════════════════════════════════════════════════════════ -->
+    <div id="register-page" class="page auth-page">
+      <div class="auth-card wide">
+        <div class="auth-logo">
+          <div class="logo-icon">📚</div>
+          <span>StudyPlanner</span>
+        </div>
+
+        <h1>Create Account</h1>
+        <p class="subtitle">
+          Join thousands of students building better study habits
+        </p>
+
+        <form onsubmit="handleRegister(event)">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Full Name</label>
+              <input
+                type="text"
+                name="full_name"
+                placeholder="Rahul Sharma"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label>College Name</label>
+              <input
+                type="text"
+                name="college_name"
+                placeholder="MIT College of Engineering"
+                required
+              />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Contact Number</label>
+              <input
+                type="tel"
+                name="contact_number"
+                placeholder="9876543210"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label>Email Address</label>
+              <input
+                type="email"
+                name="email"
+                placeholder="you@college.edu"
+                required
+              />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Address</label>
+            <textarea
+              name="address"
+              placeholder="Your city and state..."
+              rows="2"
+              required
+            ></textarea>
+          </div>
+
+          <div class="form-group">
+            <label>Password</label>
+            <input
+              type="password"
+              name="password"
+              placeholder="At least 6 characters"
+              required
+            />
+          </div>
+
+          <button
+            type="submit"
+            class="btn btn-primary"
+            data-label="Create Account"
+          >
+            Create Account →
+          </button>
+        </form>
+
+        <p class="auth-switch">
+          Already have an account?
+          <a onclick="showPage('login-page')">Sign in</a>
+        </p>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════════════════════════════
+     PAGE 3: DASHBOARD
+════════════════════════════════════════════════════════════ -->
+    <div id="dashboard-page" class="page dashboard-page">
+      <!-- ── Top Navigation Bar ── -->
+      <nav class="topbar">
+        <div class="topbar-logo">
+          <div class="logo-icon">📚</div>
+          <span>StudyPlanner</span>
+        </div>
+
+        <div class="topbar-nav">
+          <button
+            class="nav-tab active"
+            data-tab="home"
+            onclick="switchTab('home')"
+          >
+            🏠 Home
+          </button>
+          <button class="nav-tab" data-tab="tasks" onclick="switchTab('tasks')">
+            📋 Tasks
+          </button>
+          <button
+            class="nav-tab"
+            data-tab="history"
+            onclick="switchTab('history')"
+          >
+            📜 History
+          </button>
+          <button
+            class="nav-tab"
+            data-tab="leaderboard"
+            onclick="switchTab('leaderboard')"
+          >
+            🏆 Leaderboard
+          </button>
+        </div>
+
+        <div class="topbar-user">
+          <div class="user-chip">
+            <div class="user-avatar" id="user-avatar-text">U</div>
+            <span class="user-name" id="user-name-display">User</span>
+          </div>
+          <button class="btn btn-secondary btn-sm" onclick="handleLogout()">
+            Logout
+          </button>
+        </div>
+      </nav>
+
+      <!-- ── Main Content ── -->
+      <main class="dashboard-content">
+        <!-- ══ REMINDER BANNER ══ -->
+        <div id="reminder-banner" class="reminder-banner hidden">
+          <span style="font-size: 1.3rem">⏰</span>
+          <div>
+            <strong>You have pending tasks for today!</strong>
+            <div style="font-size: 0.85rem; color: var(--muted)">
+              Complete your tasks before the deadline to maintain your streak.
+            </div>
+          </div>
+          <button class="close-btn" onclick="dismissReminder()">✕</button>
+        </div>
+
+        <!-- ══════════════════════════════════════════════════════
+             TAB: HOME
+        ══════════════════════════════════════════════════════ -->
+        <section id="section-home" class="tab-section active">
+          <div class="section-title">Good to see you! 👋</div>
+          <p class="section-subtitle">Here's your study overview for today.</p>
+
+          <!-- Stat Cards -->
+          <div class="grid-3" style="margin-bottom: 20px">
+            <div class="stat-card">
+              <div class="stat-icon blue">📚</div>
+              <div>
+                <div class="stat-value" id="stat-total">0</div>
+                <div class="stat-label">Total Tasks</div>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon green">✅</div>
+              <div>
+                <div class="stat-value" id="stat-completed">0</div>
+                <div class="stat-label">Completed</div>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon gold">⏳</div>
+              <div>
+                <div class="stat-value" id="stat-pending">0</div>
+                <div class="stat-label">Pending</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid-2">
+            <!-- Left Column -->
+            <div>
+              <!-- Streak Display -->
+              <div class="streak-display">
+                <div class="streak-fire">🔥</div>
+                <div>
+                  <div class="streak-count" id="streak-count">0</div>
+                  <div class="streak-info">
+                    <h3>Day Streak</h3>
+                    <p id="streak-msg">Complete a task to start your streak!</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Progress -->
+              <div class="card">
+                <div class="card-title">
+                  <div
+                    class="icon"
+                    style="background: rgba(90, 158, 240, 0.15)"
+                  >
+                    📊
+                  </div>
+                  Overall Progress
+                </div>
+                <div class="progress-wrap">
+                  <div class="progress-header">
+                    <span class="progress-label">Tasks Completed</span>
+                    <span class="progress-pct" id="progress-pct">0%</span>
+                  </div>
+                  <div class="progress-bar-bg">
+                    <div
+                      class="progress-bar-fill"
+                      id="progress-fill"
+                      style="width: 0%"
+                    ></div>
+                  </div>
+                </div>
+                <div
+                  style="
+                    margin-top: 12px;
+                    font-size: 0.82rem;
+                    color: var(--muted);
+                  "
+                >
+                  <span
+                    id="stat-overdue"
+                    style="color: var(--accent2); font-weight: 600"
+                    >0</span
+                  >
+                  overdue tasks need your attention
+                </div>
+              </div>
+            </div>
+
+            <!-- Right Column: Pending Tasks Preview -->
+            <div>
+              <div class="card" style="height: 100%">
+                <div
+                  class="card-title flex-between"
+                  style="margin-bottom: 14px"
+                >
+                  <span>
+                    <span style="margin-right: 8px">📋</span>Pending Tasks
+                  </span>
+                  <button
+                    class="btn btn-secondary btn-sm"
+                    onclick="switchTab('tasks')"
+                  >
+                    View All
+                  </button>
+                </div>
+                <div id="home-pending-list" class="task-list"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Add Task (Quick Add on Home) -->
+          <div class="add-task-card" id="add-task-card">
+            <div class="collapse-toggle" onclick="toggleAddTask()">
+              <div class="card-title" style="margin: 0">
+                <div class="icon" style="background: rgba(240, 165, 0, 0.15)">
+                  ➕
+                </div>
+                Add New Task
+              </div>
+              <span class="chevron">▼</span>
+            </div>
+
+            <form
+              class="task-form"
+              onsubmit="handleAddTask(event)"
+              style="margin-top: 20px"
+            >
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Subject / Task Name *</label>
+                  <input
+                    type="text"
+                    name="subject"
+                    placeholder="e.g. Mathematics Chapter 5"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label>Time Limit</label>
+                  <input
+                    type="text"
+                    name="time_limit"
+                    placeholder="e.g. 2 hours"
+                  />
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Due Date *</label>
+                  <input type="date" name="task_date" required />
+                </div>
+                <div class="form-group">
+                  <label>Description (optional)</label>
+                  <input
+                    type="text"
+                    name="description"
+                    placeholder="Brief notes..."
+                  />
+                </div>
+              </div>
+              <button
+                type="submit"
+                class="btn btn-primary"
+                style="width: auto; padding: 11px 28px"
+                data-label="Add Task"
+              >
+                Add Task
+              </button>
+            </form>
+          </div>
+        </section>
+
+        <!-- ══════════════════════════════════════════════════════
+             TAB: TASKS
+        ══════════════════════════════════════════════════════ -->
+        <section id="section-tasks" class="tab-section">
+          <div class="section-title">📋 Task Management</div>
+          <p class="section-subtitle">
+            Manage all your pending and completed tasks.
+          </p>
+
+          <!-- Add Task Form -->
+          <div class="card" style="margin-bottom: 24px">
+            <div class="card-title">
+              <div class="icon" style="background: rgba(240, 165, 0, 0.15)">
+                ➕
+              </div>
+              Add New Task
+            </div>
+            <form onsubmit="handleAddTask(event)">
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Subject / Task Name *</label>
+                  <input
+                    type="text"
+                    name="subject"
+                    placeholder="e.g. Physics Chapter 3"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label>Time Limit</label>
+                  <input
+                    type="text"
+                    name="time_limit"
+                    placeholder="e.g. 1.5 hours"
+                  />
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Due Date *</label>
+                  <input type="date" name="task_date" required />
+                </div>
+                <div class="form-group">
+                  <label>Description (optional)</label>
+                  <input
+                    type="text"
+                    name="description"
+                    placeholder="Brief notes..."
+                  />
+                </div>
+              </div>
+              <button
+                type="submit"
+                class="btn btn-primary"
+                style="width: auto; padding: 11px 28px"
+                data-label="Add Task"
+              >
+                Add Task
+              </button>
+            </form>
+          </div>
+
+          <!-- Inner Tabs: Pending / Completed -->
+          <div class="inner-tabs">
+            <button
+              class="inner-tab active"
+              data-inner-group="tasks-tab"
+              data-inner-value="pending"
+              onclick="switchInnerTab('tasks-tab', 'pending')"
+            >
+              ⏳ Pending
+            </button>
+            <button
+              class="inner-tab"
+              data-inner-group="tasks-tab"
+              data-inner-value="completed"
+              onclick="switchInnerTab('tasks-tab', 'completed')"
+            >
+              ✅ Completed
+            </button>
+          </div>
+
+          <div
+            id="tasks-tab-pending"
+            data-inner-tab="tasks-tab"
+            class="task-list active"
+          >
+            <div id="tasks-pending-list"></div>
+          </div>
+          <div
+            id="tasks-tab-completed"
+            data-inner-tab="tasks-tab"
+            class="task-list"
+          >
+            <div id="tasks-completed-list"></div>
+          </div>
+        </section>
+
+        <!-- ══════════════════════════════════════════════════════
+             TAB: HISTORY
+        ══════════════════════════════════════════════════════ -->
+        <section id="section-history" class="tab-section">
+          <div class="section-title">📜 Task History</div>
+          <p class="section-subtitle">All tasks sorted by latest date.</p>
+
+          <div class="card">
+            <div id="history-list" class="task-list"></div>
+          </div>
+        </section>
+
+        <!-- ══════════════════════════════════════════════════════
+             TAB: LEADERBOARD
+        ══════════════════════════════════════════════════════ -->
+        <section id="section-leaderboard" class="tab-section">
+          <div class="section-title">🏆 Leaderboard</div>
+          <p class="section-subtitle">Students ranked by their study streak.</p>
+
+          <div class="card">
+            <table class="leaderboard-table">
+              <thead>
+                <tr>
+                  <th>Rank</th>
+                  <th>Student</th>
+                  <th>Streak</th>
+                  <th>Last Active</th>
+                </tr>
+              </thead>
+              <tbody id="leaderboard-body">
+                <tr>
+                  <td
+                    colspan="4"
+                    style="
+                      text-align: center;
+                      padding: 40px;
+                      color: var(--muted);
+                    "
+                  >
+                    Loading leaderboard...
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div
+            style="
+              text-align: center;
+              color: var(--muted);
+              font-size: 0.82rem;
+              margin-top: 10px;
+            "
+          >
+            🔥 Streaks are calculated based on consecutive days of task
+            completion
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- ── Toast Container ── -->
+    <div id="toast-container"></div>
+
+    <!-- Handle inner tab switching for tasks -->
+    <style>
+      [data-inner-tab="tasks-tab"] {
+        display: none;
+      }
+      [data-inner-tab="tasks-tab"].active {
+        display: block;
+      }
+    </style>
+
+    <script src="js/app.js"></script>
+  </body>
+</html>
